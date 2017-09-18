@@ -1,31 +1,58 @@
 function Board() {
-  this.grid = [
-    [pawn, pawn, pawn, king, pawn, pawn, pawn, pawn],
-    [pawn, pawn, pawn, pawn, pawn, pawn, pawn, pawn],
-    [null, null, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null, null],
-    [pawn, pawn, pawn, pawn, pawn, pawn, pawn, pawn],
-    [pawn, pawn, pawn, pawn, king, pawn, pawn, pawn]
-  ]
-  this.currentPlayer = 0
-  this.victory = false
-}
+  this.grid = new Array(2).fill(null).map(function(item, row) {
+    return new Array(8).fill(null).map(function(item, col) {
+      return new Pawn(row, col)
+    })
+  })
+  this.grid.push([null, null, null, null, null, null, null, null])
+  this.grid.push([null, null, null, null, null, null, null, null])
+  this.grid.push([null, null, null, null, null, null, null, null])
+  this.grid.push([null, null, null, null, null, null, null, null])
 
-function Pawn() {
-  this.name = 'pawn'
-  this.movementMax = 1
-}
-
-function King() {
-  this.name = 'king'
-(  this.movementMax = null)
+  
 }
 
 
+function Pawn(row, col) { // can only move forward : 1 case (TO DO: 2 case if firstmove)
+  this.class = 'pawn'
+  this.pos = {
+    x: col,
+    y: row,
+  }
+  this.moved = false
+  this.legalMoves = [this.pos.x,this.pos.y+1]
+}
+
+Board.prototype.render = function() {
+  this.grid.forEach(function(row) {
+    console.log(row)
+  })
+}
+
+Pawn.prototype.move = function(x, y) {
+  console.log(this)
+  console.log(this._canMove(x,y))
+  if (this._canMove(x,y)) {
+    var temp = board.grid[0][2]
+    board.grid[y][x] = temp
+    board.grid[0].splice(2,1,null)
+    board.render()
+  }
+
+}
+
+
+Pawn.prototype._canMove = function(x, y) {
+  this.legalMoves = [this.pos.x, this.pos.y + 1]
+  if (this.legalMoves[0] === x && this.legalMoves[1] === y) {
+    return true
+  }
+  return false
+}
 
 
 
 
 var board = new Board()
+
+board.render()
