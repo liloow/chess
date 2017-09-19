@@ -36,12 +36,13 @@ Pawn.prototype.move = function(x, y) {
   console.log(this)
   console.log(this._canMove(x, y))
   console.log(this._canAttack(x, y))
-  if (this._canMove(x, y) || this._canAttack(x,y)) {
+  if (this._canMove(x, y) || this._canAttack(x, y)) {
     var temp = board.grid[this.pos.y][this.pos.x]
     board.grid[y][x] = temp
     board.grid[this.pos.y].splice(this.pos.x, 1, null)
     this.pos.y = y
     this.pos.x = x
+    this.moved = true
     board.render()
   }
 
@@ -50,6 +51,9 @@ Pawn.prototype.move = function(x, y) {
 
 Pawn.prototype._canMove = function(x, y) {
   if (this.color === 'white') {
+    if (!this.moved) {
+      this.legalMoves.push([this.pos.x, this.pos.y + 2])
+    }
     this.legalMoves.push([this.pos.x, this.pos.y + 1])
     var legal = this.legalMoves.some(function(moveset) {
       return moveset[0] === x && moveset[1] === y
@@ -58,6 +62,9 @@ Pawn.prototype._canMove = function(x, y) {
       return true
     }
   } else {
+    if (!this.moved) {
+      this.legalMoves.push([this.pos.x, this.pos.y - 2])
+    }
     this.legalMoves.push([this.pos.x, this.pos.y - 1])
     var legal = this.legalMoves.some(function(moveset) {
       console.log(moveset)
