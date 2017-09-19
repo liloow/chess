@@ -12,8 +12,8 @@ function Board() {
       return new Pawn(row + 3, col, 'black')
     });
   }))[0])
-  this.grid[0].splice(0, 1, new Rook(0, 0, 'white'))
-  this.grid[4].splice(0, 1, new Rook(4, 0, 'black'))
+  this.grid[0].splice(1, 1, new Knight(0, 1, 'white'))
+  this.grid[4].splice(1, 1, new Knight(4, 1, 'black'))
 }
 
 var PiecePrototype = {
@@ -25,7 +25,18 @@ var PiecePrototype = {
       return true
     }
     return false
+  },
+  move: function(x, y) {
+  this.legalMoves = []
+  if (this._canMove(x, y)) {
+    var temp = board.grid[this.pos.y][this.pos.x]
+    board.grid[y][x] = temp
+    board.grid[this.pos.y].splice(this.pos.x, 1, null)
+    this.pos.y = y
+    this.pos.x = x
+    board.render()
   }
+},
 }
 
 
@@ -41,16 +52,7 @@ function Pawn(row, col, color) { // can only move forward : 1 case (TO DO: 2 cas
   this.range = 1
 }
 
-function Rook(row, col, color) { // can only move forward : 1 case (TO DO: 2 case if firstmove)
-  this.class = 'rook'
-  this.color = color
-  this.pos = {
-    x: col,
-    y: row,
-  }
-  this.legalMoves = []
-  this.range = 7
-}
+
 
 Board.prototype.render = function() {
   this.grid.forEach(function(row) {
@@ -58,72 +60,45 @@ Board.prototype.render = function() {
   })
 }
 
-///////////////////////////////////////////////
-//                  ROOK                     //
-///////////////////////////////////////////////
-
-Rook.prototype = Object.create(PiecePrototype)
-
-Rook.prototype._canMove = function(x, y) {
-  for (i = this.pos.y + 1; i < board.grid.length; i++) { //MOVE DOWN
-    if (board.grid[i][this.pos.x]) {
-      if (this.color !== board.grid[i][this.pos.x].color) { //MAKE BLOCKER POSITION LEGAL IF ENEMY
-        this.legalMoves.push([this.pos.x, i])
-      }
-      i = board.grid.length // STOP LOOP ON BLOCKER
-    } else {
-      this.legalMoves.push([this.pos.x, i])
-    }
+function Knight(row, col, color) { // can only move forward : 1 case (TO DO: 2 case if firstmove)
+  this.class = 'knight'
+  this.color = color
+  this.pos = {
+    x: col,
+    y: row,
   }
-  for (j = this.pos.y - 1; j > 0; j--) { //MOVE UP
-    if (board.grid[j][this.pos.x]) {
-      if (this.color !== board.grid[j][this.pos.x].color) { //MAKE BLOCKER POSITION LEGAL IF ENEMY
-        this.legalMoves.push([this.pos.x, j])
-      }
-      j = 0 // STOP LOOP ON BLOCKER
-    } else {
-      this.legalMoves.push([this.pos.x, j])
-    }
-  }
-  for (k = this.pos.x + 1; k < board.grid.length; k++) { //MOVE RIGHT
-    if (board.grid[this.pos.y][k]) {
-      if (this.color !== board.grid[this.pos.y][k].color) { //MAKE BLOCKER POSITION LEGAL IF ENEMY
-        this.legalMoves.push([k, this.pos.y])
-      }
-      k = board.grid.length // STOP LOOP ON BLOCKER
-    } else {
-      this.legalMoves.push([k, this.pos.y])
-    }
-  }
-  for (l = this.pos.x - 1; l > 0; l--) { //MOVE LEFT
-    if (board.grid[this.pos.y][l]) {
-      if (this.color !== board.grid[this.pos.y][l].color) { //MAKE BLOCKER POSITION LEGAL IF ENEMY
-        this.legalMoves.push([l, this.pos.y])
-      }
-      l = 0 // STOP LOOP ON BLOCKER
-    } else {
-      this.legalMoves.push([l, this.pos.y])
-    }
-  }
-  console.log(this.legalMoves)
-  return this.checkLegal(x,y)
-}
-
-Rook.prototype.move = function(x, y) {
   this.legalMoves = []
-  if (this._canMove(x, y)) {
-    var temp = board.grid[this.pos.y][this.pos.x]
-    board.grid[y][x] = temp
-    board.grid[this.pos.y].splice(this.pos.x, 1, null)
-    this.pos.y = y
-    this.pos.x = x
-    board.render()
-  }
+  this.range = 3
 }
+
+Knight.prototype = Object.create(PiecePrototype)
+
 
 ///////////////////////////////////////////////
 //                 KNIGHT                    //
 ///////////////////////////////////////////////
+
+Knight.prototype._canMove = function(x, y) {
+  var that = this
+//  debugger
+  for(i=(this.pos.y-2);i<=(this.pos.y+2);i+=4) {
+    this.legalMoves.push([i,this.pos.x+1])
+    this.legalMoves.push([i,this.pos.x-1])
+  }
+    for(j=(this.pos.x-2);j<=(this.pos.x+2);j+=4) {
+    this.legalMoves.push([this.pos.y+1,j])
+    this.legalMoves.push([this.pos.y-1,j])
+  }
+  var caseExist = this.legalMoves.filter(function (item) {
+    return item[0] >= 0 && item[1] >= 0
+  }).filter(function(item) {
+    if (!board.grid[item[0]][item[1]]) return true
+    return that.color !== board.grid[item[0]][item[1]].color
+  })
+  this.legalMoves = caseExist
+  console.log(this.legalMoves)
+  return this.checkLegal(x,y)
+}
 
 
 ///////////////////////////////////////////////
