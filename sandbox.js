@@ -16,6 +16,19 @@ function Board() {
   this.grid[4].splice(0, 1, new Rook(4, 0, 'black'))
 }
 
+var PiecePrototype = {
+  checkLegal: function(x,y) {
+    var legal = this.legalMoves.some(function(moveset) {
+      return moveset[0] === x && moveset[1] === y
+    })
+    if (legal) {
+      return true
+    }
+    return false
+  }
+}
+
+
 function Pawn(row, col, color) { // can only move forward : 1 case (TO DO: 2 case if firstmove)
   this.class = 'pawn'
   this.color = color
@@ -49,13 +62,15 @@ Board.prototype.render = function() {
 //                  ROOK                     //
 ///////////////////////////////////////////////
 
+Rook.prototype = Object.create(PiecePrototype)
+
 Rook.prototype._canMove = function(x, y) {
   for (i = this.pos.y + 1; i < board.grid.length; i++) { //MOVE DOWN
     if (board.grid[i][this.pos.x]) {
       if (this.color !== board.grid[i][this.pos.x].color) { //MAKE BLOCKER POSITION LEGAL IF ENEMY
         this.legalMoves.push([this.pos.x, i])
       }
-      i = board.grid.length                                 // STOP LOOP ON BLOCKER
+      i = board.grid.length // STOP LOOP ON BLOCKER
     } else {
       this.legalMoves.push([this.pos.x, i])
     }
@@ -65,7 +80,7 @@ Rook.prototype._canMove = function(x, y) {
       if (this.color !== board.grid[j][this.pos.x].color) { //MAKE BLOCKER POSITION LEGAL IF ENEMY
         this.legalMoves.push([this.pos.x, j])
       }
-      j = 0                                                // STOP LOOP ON BLOCKER
+      j = 0 // STOP LOOP ON BLOCKER
     } else {
       this.legalMoves.push([this.pos.x, j])
     }
@@ -75,7 +90,7 @@ Rook.prototype._canMove = function(x, y) {
       if (this.color !== board.grid[this.pos.y][k].color) { //MAKE BLOCKER POSITION LEGAL IF ENEMY
         this.legalMoves.push([k, this.pos.y])
       }
-      k = board.grid.length                                 // STOP LOOP ON BLOCKER
+      k = board.grid.length // STOP LOOP ON BLOCKER
     } else {
       this.legalMoves.push([k, this.pos.y])
     }
@@ -85,12 +100,25 @@ Rook.prototype._canMove = function(x, y) {
       if (this.color !== board.grid[this.pos.y][l].color) { //MAKE BLOCKER POSITION LEGAL IF ENEMY
         this.legalMoves.push([l, this.pos.y])
       }
-      l = 0                                                // STOP LOOP ON BLOCKER
+      l = 0 // STOP LOOP ON BLOCKER
     } else {
       this.legalMoves.push([l, this.pos.y])
     }
   }
   console.log(this.legalMoves)
+  return this.checkLegal(x,y)
+}
+
+Rook.prototype.move = function(x, y) {
+  this.legalMoves = []
+  if (this._canMove(x, y)) {
+    var temp = board.grid[this.pos.y][this.pos.x]
+    board.grid[y][x] = temp
+    board.grid[this.pos.y].splice(this.pos.x, 1, null)
+    this.pos.y = y
+    this.pos.x = x
+    board.render()
+  }
 }
 
 ///////////////////////////////////////////////
