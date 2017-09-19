@@ -11,6 +11,8 @@ function Board() {
       return new Pawn(row + 3, col, 'black')
     });
   }))[0])
+  this.grid[0].splice(1, 1, new King(0, 1, 'white'))
+  this.grid[3].splice(2, 1, new King(3, 2, 'black'))
 }
 
 function Pawn(row, col, color) { // can only move forward : 1 case (TO DO: 2 case if firstmove)
@@ -25,58 +27,26 @@ function Pawn(row, col, color) { // can only move forward : 1 case (TO DO: 2 cas
   this.range = 1
 }
 
+function King(row, col, color) { // can only move forward : 1 case (TO DO: 2 case if firstmove)
+  this.class = 'king'
+  this.color = color
+  this.pos = {
+    x: col,
+    y: row,
+  }
+  this.legalMoves = []
+  this.range = 1
+}
+
 Board.prototype.render = function() {
   this.grid.forEach(function(row) {
     console.log(row)
   })
 }
 
-Pawn.prototype.move = function(x, y) {
-  this.legalMoves = []
-  console.log(this)
-  console.log(this._canMove(x, y))
-  console.log(this._canAttack(x, y))
-  if (this._canMove(x, y) || this._canAttack(x, y)) {
-    var temp = board.grid[this.pos.y][this.pos.x]
-    board.grid[y][x] = temp
-    board.grid[this.pos.y].splice(this.pos.x, 1, null)
-    this.pos.y = y
-    this.pos.x = x
-    this.moved = true
-    board.render()
-  }
-
-}
-
-
-Pawn.prototype._canMove = function(x, y) {
-  if (this.color === 'white') {
-    if (!this.moved) {
-      this.legalMoves.push([this.pos.x, this.pos.y + 2])
-    }
-    this.legalMoves.push([this.pos.x, this.pos.y + 1])
-    var legal = this.legalMoves.some(function(moveset) {
-      return moveset[0] === x && moveset[1] === y
-    })
-    if (legal) {
-      return true
-    }
-  } else {
-    if (!this.moved) {
-      this.legalMoves.push([this.pos.x, this.pos.y - 2])
-    }
-    this.legalMoves.push([this.pos.x, this.pos.y - 1])
-    var legal = this.legalMoves.some(function(moveset) {
-      console.log(moveset)
-      return moveset[0] === x && moveset[1] === y
-    })
-    if (legal) {
-      return true
-    }
-
-    return false
-  }
-}
+///////////////////////////////////////////////
+//                  PAWN                     //
+///////////////////////////////////////////////
 
 
 Pawn.prototype._canAttack = function(x, y) {
@@ -106,6 +76,66 @@ Pawn.prototype._canAttack = function(x, y) {
   }
   return false
 }
+
+
+///////////////////////////////////////////////
+//                  KING                     //
+///////////////////////////////////////////////
+
+
+King.prototype.move = function(x, y) {
+  this.legalMoves = [] // reset legal moves
+  if (this._canMove(x, y)) {
+    var temp = board.grid[this.pos.y][this.pos.x]
+    board.grid[y][x] = temp
+    board.grid[this.pos.y].splice(this.pos.x, 1, null)
+    this.pos.y = y
+    this.pos.x = x
+    board.render()
+  }
+}
+
+King.prototype._canMove = function(x, y) {
+  var that = this
+  if (this.color === 'white') {
+    for (i = (that.pos.x - 1); i <= (that.pos.x + 1); i++) { //scope of legal moves
+      for (j = (that.pos.y - 1); j <= (that.pos.y + 1); j++) {
+        this.legalMoves.push([i, j])
+      }
+    }
+    this.legalMoves.splice(4, 1)
+    var legal = this.legalMoves.some(function(moveset) {
+      return moveset[0] === x && moveset[1] === y
+    })
+    if (legal) return true
+  } else {
+    for (i = this.pos.y - 1; i <= this.pos.y + 1; i++) { //scope of legal moves
+      for (j = this.pos.x - 1; j <= this.pos.x + 1; j++) {
+        this.legalMoves.push([j, i])
+      }
+    }
+    this.legalMoves.splice(4, 1)
+    var legal = this.legalMoves.some(function(moveset) {
+      return moveset[0] === x && moveset[1] === y
+    })
+    if (legal) return true
+  }
+  return false
+}
+
+
+///////////////////////////////////////////////
+//                  ROOK                     //
+///////////////////////////////////////////////
+
+
+///////////////////////////////////////////////
+//                 KNIGHT                    //
+///////////////////////////////////////////////
+
+///////////////////////////////////////////////
+//                  PAWN                     //
+///////////////////////////////////////////////
 
 
 
