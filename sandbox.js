@@ -8,7 +8,7 @@ function Board() {
   this.grid.push([null, null, null, null])
   this.grid.push((new Array(1).fill(null).map(function(item, row) {
     return new Array(4).fill(null).map(function(item, col) {
-      return new Pawn(row+3, col, 'black')
+      return new Pawn(row + 3, col, 'black')
     });
   }))[0])
 }
@@ -34,6 +34,7 @@ Board.prototype.render = function() {
 Pawn.prototype.move = function(x, y) {
   console.log(this)
   console.log(this._canMove(x, y))
+  console.log(this._canAttack(x,y))
   if (this._canMove(x, y)) {
     var temp = board.grid[this.pos.y][this.pos.x]
     board.grid[y][x] = temp
@@ -52,10 +53,33 @@ Pawn.prototype._canMove = function(x, y) {
     if (this.legalMoves[0] === x && this.legalMoves[1] === y) {
       return true
     }
-  }
-  else {
+  } else {
     this.legalMoves = [this.pos.x, this.pos.y - 1]
     if (this.legalMoves[0] === x && this.legalMoves[1] === y) {
+      return true
+    }
+  }
+  return false
+}
+
+Pawn.prototype._canAttack = function(x, y) {
+  if (this.color === 'white') {
+    if (
+      board.grid[y][x].color === 'black' && (
+        (this.pos.x === x - 1 && this.pos.y === y + 1) ||
+        (this.pos.x === x + 1 && this.pos.y === y + 1)
+      )) {
+      this.legalMoves.push([y, x])
+      return true
+    }
+
+  } else if (this.color === 'black') {
+    if (
+      board.grid[y][x].color === 'white' && (
+        (this.pos.x === x - 1 && this.pos.y === y - 1) ||
+        (this.pos.x === x + 1 && this.pos.y === y - 1)
+      )) {
+      this.legalMoves.push([y, x])
       return true
     }
   }

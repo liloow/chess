@@ -8,20 +8,32 @@ function Board() {
   this.grid.push([null, null, null, null, null, null, null, null])
   this.grid.push([null, null, null, null, null, null, null, null])
   this.grid.push([null, null, null, null, null, null, null, null])
+  this.grid.push((new Array(1).fill(null).map(function(item, row) {
+    return new Array(8).fill(null).map(function(item, col) {
+      return new Pawn(row + 3, col, 'black')
+    });
+  }))[0])
+    this.grid.push((new Array(1).fill(null).map(function(item, row) {
+    return new Array(8).fill(null).map(function(item, col) {
+      return new Pawn(row + 3, col, 'black')
+    });
+  }))[0])
 
-  
 }
 
 
-function Pawn(row, col) { // can only move forward : 1 case (TO DO: 2 case if firstmove)
+function Pawn(row, col, color) { // can only move forward : 1 case (TO DO: 2 case if firstmove)
   this.class = 'pawn'
+  this.color = color
   this.pos = {
     x: col,
     y: row,
   }
   this.moved = false
-  this.legalMoves = [this.pos.x,this.pos.y+1]
+  this.legalMoves = []
+  this.range = 1
 }
+
 
 Board.prototype.render = function() {
   this.grid.forEach(function(row) {
@@ -59,7 +71,6 @@ Pawn.prototype._canMove = function(x, y) {
   }
   return false
 }
-
 
 
 
