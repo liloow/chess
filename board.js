@@ -31,11 +31,13 @@ Board.prototype.render = function() {
 
 Pawn.prototype.move = function(x, y) {
   console.log(this)
-  console.log(this._canMove(x,y))
-  if (this._canMove(x,y)) {
-    var temp = board.grid[0][2]
+  console.log(this._canMove(x, y))
+  if (this._canMove(x, y)) {
+    var temp = board.grid[this.pos.y][this.pos.x]
     board.grid[y][x] = temp
-    board.grid[0].splice(2,1,null)
+    board.grid[this.pos.y].splice(this.pos.x, 1, null)
+    this.pos.y = y
+    this.pos.x = x
     board.render()
   }
 
@@ -43,9 +45,17 @@ Pawn.prototype.move = function(x, y) {
 
 
 Pawn.prototype._canMove = function(x, y) {
-  this.legalMoves = [this.pos.x, this.pos.y + 1]
-  if (this.legalMoves[0] === x && this.legalMoves[1] === y) {
-    return true
+  if (this.color === 'white') {
+    this.legalMoves = [this.pos.x, this.pos.y + 1]
+    if (this.legalMoves[0] === x && this.legalMoves[1] === y) {
+      return true
+    }
+  }
+  else {
+    this.legalMoves = [this.pos.x, this.pos.y - 1]
+    if (this.legalMoves[0] === x && this.legalMoves[1] === y) {
+      return true
+    }
   }
   return false
 }
