@@ -32,10 +32,11 @@ Board.prototype.render = function() {
 }
 
 Pawn.prototype.move = function(x, y) {
+  this.legalMoves = []
   console.log(this)
   console.log(this._canMove(x, y))
-  console.log(this._canAttack(x,y))
-  if (this._canMove(x, y)) {
+  console.log(this._canAttack(x, y))
+  if (this._canMove(x, y) || this._canAttack(x,y)) {
     var temp = board.grid[this.pos.y][this.pos.x]
     board.grid[y][x] = temp
     board.grid[this.pos.y].splice(this.pos.x, 1, null)
@@ -49,23 +50,36 @@ Pawn.prototype.move = function(x, y) {
 
 Pawn.prototype._canMove = function(x, y) {
   if (this.color === 'white') {
-    this.legalMoves = [this.pos.x, this.pos.y + 1]
-    if (this.legalMoves[0] === x && this.legalMoves[1] === y) {
+    this.legalMoves.push([this.pos.x, this.pos.y + 1])
+    var legal = this.legalMoves.some(function(moveset) {
+      return moveset[0] === x && moveset[1] === y
+    })
+    if (legal) {
       return true
     }
   } else {
-    this.legalMoves = [this.pos.x, this.pos.y - 1]
-    if (this.legalMoves[0] === x && this.legalMoves[1] === y) {
+    this.legalMoves.push([this.pos.x, this.pos.y - 1])
+    var legal = this.legalMoves.some(function(moveset) {
+      console.log(moveset)
+      return moveset[0] === x && moveset[1] === y
+    })
+    if (legal) {
       return true
     }
+
+    return false
   }
-  return false
 }
 
+
 Pawn.prototype._canAttack = function(x, y) {
-  if (this.color === 'white') {
+  var target = board.grid[y][x]
+  console.log(target)
+  if (target === null) return false // If empty, stop function
+
+  if (target.color === 'white') {
     if (
-      board.grid[y][x].color === 'black' && (
+      this.color === 'black' && (
         (this.pos.x === x - 1 && this.pos.y === y + 1) ||
         (this.pos.x === x + 1 && this.pos.y === y + 1)
       )) {
@@ -73,9 +87,9 @@ Pawn.prototype._canAttack = function(x, y) {
       return true
     }
 
-  } else if (this.color === 'black') {
+  } else if (target.color === 'black') {
     if (
-      board.grid[y][x].color === 'white' && (
+      this.color === 'white' && (
         (this.pos.x === x - 1 && this.pos.y === y - 1) ||
         (this.pos.x === x + 1 && this.pos.y === y - 1)
       )) {
