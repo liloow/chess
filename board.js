@@ -46,7 +46,11 @@ function Board() {
 
   // PLAYER RELATED
 
-  this.currentPlayer = 0
+  this.currentPlayer = true
+  this.players = {
+    true: 'white',
+    false: 'black',
+  }
 
   this.whiteKingPosition = {
     x: 4,
@@ -95,6 +99,10 @@ var PiecePrototype = {
           board.blackKingPosition = this.pos
         }
       }
+      if (this.checkCheck()) {
+        alert('!!CHECK!!')
+      }
+      board.currentPlayer = !board.currentPlayer
     }
   },
   checkCheckLastPlayed: function(x, y) {
@@ -111,13 +119,13 @@ var PiecePrototype = {
     return false
   },
   checkCheck: function() {
- //   debugger
-    if (!board.currentPlayer) {
+  //     debugger
+    if (board.currentPlayer) {
       a = board.blackKingPosition.x
       b = board.blackKingPosition.y
       return board.whiteAssets.map((el, i) => { return el._canMove(a, b) }).some((el, i) => { return el })
     }
-    if (board.currentPlayer) {
+    if (!board.currentPlayer) {
       a = board.whiteKingPosition.x
       b = board.whiteKingPosition.y
       return board.blackAssets.map((el, i) => { return el._canMove(a, b) }).some((el, i) => { return el })
@@ -238,7 +246,6 @@ Pawn.prototype._canMove = function(x, y) {
     }
     this.legalMoves.push([this.pos.x, this.pos.y - 1])
     var legal = this.legalMoves.some(function(moveset) {
-      console.log(moveset)
       return moveset[0] === x && moveset[1] === y
     })
     if (legal) {
@@ -251,7 +258,6 @@ Pawn.prototype._canMove = function(x, y) {
 
 Pawn.prototype._canAttack = function(x, y) {
   var target = board.grid[y][x]
-  console.log(target)
   if (target === null) return false // If empty, stop function
 
   if (target.color === 'white') {
@@ -297,12 +303,11 @@ King.prototype._canMove = function(x, y) {
     }
   }
   this.legalMoves.splice(4, 1)
- // debugger
+  // debugger
   let inbound = this.legalMoves.filter((el, i) => {
     return (el[0] >= 0 && el[1] >= 0) && (el[0] < board.grid.length && el[1] < board.grid.length) // UGLY TRICK TO REMOVE OUT OF BOUNDS MOVES
-  }).filter((el,i)=>{return board.grid[el[0]][el[1]] === null || board.grid[el[0]][el[1]].color !== that.color})
+  }).filter((el, i) => { return board.grid[el[0]][el[1]] === null || board.grid[el[0]][el[1]].color !== that.color })
   this.legalMoves = inbound
-  console.log(this.legalMoves)
   return this.checkLegal(x, y)
 }
 
@@ -351,7 +356,6 @@ Rook.prototype._canMove = function(x, y) {
       this.legalMoves.push([l, this.pos.y])
     }
   }
-  console.log(this.legalMoves)
   return this.checkLegal(x, y)
 }
 
@@ -376,7 +380,6 @@ Knight.prototype._canMove = function(x, y) {
     return that.color !== board.grid[item[0]][item[1]].color
   })
   this.legalMoves = caseExist
-  console.log(this.legalMoves)
   return this.checkLegal(x, y)
 }
 
@@ -439,7 +442,6 @@ Bishop.prototype._canMove = function(x, y) {
     return (item[0] >= 0 && item[1] >= 0) && (item[0] < board.grid.length && item[1] < board.grid.length) // UGLY TRICK TO REMOVE OUT OF BOUNDS MOVES
   })
   this.legalMoves = caseExist
-  console.log(this.legalMoves)
   return this.checkLegal(x, y)
 }
 
@@ -542,7 +544,6 @@ Queen.prototype._canMove = function(x, y) {
     return (item[0] >= 0 && item[1] >= 0) && (item[0] < board.grid.length && item[1] < board.grid.length) // UGLY TRICK TO REMOVE OUT OF BOUNDS MOVES
   })
   this.legalMoves = caseExist
-  console.log(this.legalMoves)
   return this.checkLegal(x, y)
 }
 
