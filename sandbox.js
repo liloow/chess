@@ -12,12 +12,12 @@ function Board() {
       return new Pawn(row + 3, col, 'black')
     });
   }))[0])
-  this.grid[0].splice(1, 1, new Knight(0, 1, 'white'))
-  this.grid[4].splice(1, 1, new Knight(4, 1, 'black'))
+  this.grid[0].splice(2, 1, new Bishop(0, 2, 'white'))
+  this.grid[4].splice(2, 1, new Bishop(4, 2, 'black'))
 }
 
 var PiecePrototype = {
-  checkLegal: function(x,y) {
+  checkLegal: function(x, y) {
     var legal = this.legalMoves.some(function(moveset) {
       return moveset[0] === x && moveset[1] === y
     })
@@ -27,16 +27,16 @@ var PiecePrototype = {
     return false
   },
   move: function(x, y) {
-  this.legalMoves = []
-  if (this._canMove(x, y)) {
-    var temp = board.grid[this.pos.y][this.pos.x]
-    board.grid[y][x] = temp
-    board.grid[this.pos.y].splice(this.pos.x, 1, null)
-    this.pos.y = y
-    this.pos.x = x
-    board.render()
-  }
-},
+    this.legalMoves = []
+    if (this._canMove(x, y)) {
+      var temp = board.grid[this.pos.y][this.pos.x]
+      board.grid[y][x] = temp
+      board.grid[this.pos.y].splice(this.pos.x, 1, null)
+      this.pos.y = y
+      this.pos.x = x
+      board.render()
+    }
+  },
 }
 
 
@@ -60,7 +60,7 @@ Board.prototype.render = function() {
   })
 }
 
-function Knight(row, col, color) { // can only move forward : 1 case (TO DO: 2 case if firstmove)
+function Bishop(row, col, color) { // can only move forward : 1 case (TO DO: 2 case if firstmove)
   this.class = 'knight'
   this.color = color
   this.pos = {
@@ -71,39 +71,30 @@ function Knight(row, col, color) { // can only move forward : 1 case (TO DO: 2 c
   this.range = 3
 }
 
-Knight.prototype = Object.create(PiecePrototype)
+Bishop.prototype = Object.create(PiecePrototype)
 
 
-///////////////////////////////////////////////
-//                 KNIGHT                    //
-///////////////////////////////////////////////
-
-Knight.prototype._canMove = function(x, y) {
-  var that = this
-//  debugger
-  for(i=(this.pos.y-2);i<=(this.pos.y+2);i+=4) {
-    this.legalMoves.push([i,this.pos.x+1])
-    this.legalMoves.push([i,this.pos.x-1])
-  }
-    for(j=(this.pos.x-2);j<=(this.pos.x+2);j+=4) {
-    this.legalMoves.push([this.pos.y+1,j])
-    this.legalMoves.push([this.pos.y-1,j])
-  }
-  var caseExist = this.legalMoves.filter(function (item) {
-    return item[0] >= 0 && item[1] >= 0
-  }).filter(function(item) {
-    if (!board.grid[item[0]][item[1]]) return true
-    return that.color !== board.grid[item[0]][item[1]].color
-  })
-  this.legalMoves = caseExist
-  console.log(this.legalMoves)
-  return this.checkLegal(x,y)
-}
 
 
 ///////////////////////////////////////////////
 //                 BISHOP                    //
 ///////////////////////////////////////////////
+
+Bishop.prototype._canMove = function(x, y) {
+  for (i = this.pos.y; i < board.grid.length; i++) { //MOVE DOWN
+    this.legalMoves.push([this.pos.y - i, this.pos.x - i])
+    this.legalMoves.push([this.pos.y + i, this.pos.x + i])
+  }
+  for (j = this.pos.y; i < board.grid.length; i++) { //MOVE DOWN
+    this.legalMoves.push([this.pos.y - i, this.pos.x + i])
+    this.legalMoves.push([this.pos.y + i, this.pos.x - i])
+  }
+/*  var caseExist = this.legalMoves.filter(function(item) {
+    return (item[0] >= 0 && item[1] >= 0)
+  })
+  this.legalMoves = caseExist */
+  console.log(this.legalMoves)
+}
 
 
 ///////////////////////////////////////////////

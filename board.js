@@ -45,7 +45,18 @@ var PiecePrototype = {
       return true
     }
     return false
-  }
+  },
+    move: function(x, y) {
+    this.legalMoves = []
+    if (this._canMove(x, y)) {
+      var temp = board.grid[this.pos.y][this.pos.x]
+      board.grid[y][x] = temp
+      board.grid[this.pos.y].splice(this.pos.x, 1, null)
+      this.pos.y = y
+      this.pos.x = x
+      board.render()
+    }
+  },
 }
 
 ///////////////////////////////////////////////
@@ -299,7 +310,7 @@ Knight.prototype._canMove = function(x, y) {
     this.legalMoves.push([this.pos.y-1,j])
   }
   var caseExist = this.legalMoves.filter(function (item) {
-    return item[0] >= 0 && item[1] >= 0
+    return (item[0] >= 0 && item[1] >= 0) || (item[0] < this.length && item[1] < this.length)
   }).filter(function(item) {
     if (!board.grid[item[0]][item[1]]) return true
     return that.color !== board.grid[item[0]][item[1]].color
