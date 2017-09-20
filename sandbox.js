@@ -81,19 +81,62 @@ Bishop.prototype = Object.create(PiecePrototype)
 ///////////////////////////////////////////////
 
 Bishop.prototype._canMove = function(x, y) {
-  for (i = this.pos.y; i < board.grid.length; i++) { //MOVE DOWN
-    this.legalMoves.push([this.pos.y - i, this.pos.x - i])
-    this.legalMoves.push([this.pos.y + i, this.pos.x + i])
+  var X = this.pos.x
+  var Y = this.pos.y
+  for (i = 1; i < board.grid.length; i++) { //MOVE UP LEFT
+    if (board.grid[Y - i]) {
+      if (board.grid[Y - i][X - i]) {
+        if (this.color !== board.grid[Y - i][X - i].color) { //MAKE BLOCKER POSITION LEGAL IF ENEMY
+          this.legalMoves.push([X - i, Y - i])
+        }
+        i = board.grid.length // STOP LOOP ON BLOCKER
+      } else {
+        this.legalMoves.push([X - i, Y - i])
+      }
+    }
   }
-  for (j = this.pos.y; i < board.grid.length; i++) { //MOVE DOWN
-    this.legalMoves.push([this.pos.y - i, this.pos.x + i])
-    this.legalMoves.push([this.pos.y + i, this.pos.x - i])
+  for (j = 1; j < board.grid.length; j++) { // MOVE DOWN RIGHT
+    if (board.grid[Y + j]) {
+      if (board.grid[Y + j][X + j]) {
+        if (this.color !== board.grid[Y + j][X + j].color) { //MAKE BLOCKER POSITION LEGAL IF ENEMY
+          this.legalMoves.push([X + j, Y + j])
+        }
+        j = board.grid.length // STOP LOOP ON BLOCKER
+      } else {
+        this.legalMoves.push([X + j, Y + j])
+      }
+    }
   }
-/*  var caseExist = this.legalMoves.filter(function(item) {
-    return (item[0] >= 0 && item[1] >= 0)
+  for (k = 1; k < board.grid.length; k++) { //MOVE DOWN LEFT 
+    if (board.grid[Y + k]) {
+      if (board.grid[Y + k][X - k]) {
+        if (this.color !== board.grid[Y + k][X - k].color) { //MAKE BLOCKER POSITION LEGAL IF ENEMY
+          this.legalMoves.push([X - k, Y + k])
+        }
+        k = board.grid.length // STOP LOOP ON BLOCKER
+      } else {
+        this.legalMoves.push([X - k, Y + k])
+      }
+    }
+  }
+  for (l = 1; l < board.grid.length; l++) { // MOVE UP RIGHT
+    if (board.grid[Y - l]) {
+      if (board.grid[Y - l][X + 1]) {
+        if (this.color !== board.grid[Y - l][X + l].color) { //MAKE BLOCKER POSITION LEGAL IF ENEMY
+          this.legalMoves.push([X + l, Y - l])
+        }
+        l = board.grid.length // STOP LOOP ON BLOCKER
+      } else {
+        this.legalMoves.push([X + l, Y - l])
+      }
+    }
+  }
+  var caseExist = this.legalMoves.filter(function(item) {
+    return (item[0] >= 0 && item[1] >= 0) && (item[0] < board.grid.length && item[1] < board.grid.length) // UGLY TRICK TO REMOVE OUT OF BOUNDS MOVES
   })
-  this.legalMoves = caseExist */
+  this.legalMoves = caseExist
   console.log(this.legalMoves)
+  return this.checkLegal(x, y)
 }
 
 
