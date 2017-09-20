@@ -1,4 +1,7 @@
-function Board() {
+function Board() { //TO DO : OPTIMIZE THIS CRAP
+
+	//BOARD CREATION
+
   this.grid = new Array(2).fill(null).map(function(item, row) {
     return new Array(8).fill(null).map(function(item, col) {
       return new Pawn(row, col)
@@ -34,6 +37,25 @@ function Board() {
   this.grid[7].splice(5, 1, new Bishop(7, 5, 'black'))
   this.grid[0].splice(3, 1, new Queen(0, 3, 'white'))
   this.grid[7].splice(3, 1, new Queen(7, 3, 'black'))
+
+
+  // PLAYER RELATED
+
+  this.currentPlayer = 0
+
+  this.whiteKingPosition = {
+  	x: 4,
+  	y: 0,
+  }
+  this.blackKingPosition = {
+  	x: 4,
+  	y: 7,
+  }
+  this.whiteLoss = []
+  this.blackLoss = []
+  this.whiteWin = false
+  this.blackWin = false
+
 }
 
 Board.prototype.render = function() {
@@ -62,6 +84,9 @@ var PiecePrototype = {
       this.pos.x = x
       board.render()
     }
+  },
+  checkCheck : function(x,y) {
+  	return false
   },
 }
 
