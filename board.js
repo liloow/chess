@@ -461,44 +461,44 @@ Queen.prototype._canMove = function(x, y) {
       }
     }
   }
-  for (i = this.pos.y + 1; i < board.grid.length; i++) { //MOVE DOWN
-    if (board.grid[i][this.pos.x]) {
-      if (this.color !== board.grid[i][this.pos.x].color) { //MAKE BLOCKER POSITION LEGAL IF ENEMY
-        this.legalMoves.push([this.pos.x, i])
+  for (i = Y + 1; i < board.grid.length; i++) { //MOVE DOWN
+    if (board.grid[i][X]) {
+      if (this.color !== board.grid[i][X].color) { //MAKE BLOCKER POSITION LEGAL IF ENEMY
+        this.legalMoves.push([X, i])
       }
       i = board.grid.length // STOP LOOP ON BLOCKER
     } else {
-      this.legalMoves.push([this.pos.x, i])
+      this.legalMoves.push([X, i])
     }
   }
-  for (j = this.pos.y - 1; j > 0; j--) { //MOVE UP
-    if (board.grid[j][this.pos.x]) {
-      if (this.color !== board.grid[j][this.pos.x].color) { //MAKE BLOCKER POSITION LEGAL IF ENEMY
-        this.legalMoves.push([this.pos.x, j])
+  for (j = Y - 1; j > 0; j--) { //MOVE UP
+    if (board.grid[j][X]) {
+      if (this.color !== board.grid[j][X].color) { //MAKE BLOCKER POSITION LEGAL IF ENEMY
+        this.legalMoves.push([X, j])
       }
       j = 0 // STOP LOOP ON BLOCKER
     } else {
-      this.legalMoves.push([this.pos.x, j])
+      this.legalMoves.push([X, j])
     }
   }
-  for (k = this.pos.x + 1; k < board.grid.length; k++) { //MOVE RIGHT
-    if (board.grid[this.pos.y][k]) {
-      if (this.color !== board.grid[this.pos.y][k].color) { //MAKE BLOCKER POSITION LEGAL IF ENEMY
-        this.legalMoves.push([k, this.pos.y])
+  for (k = X + 1; k < board.grid.length; k++) { //MOVE RIGHT
+    if (board.grid[Y][k]) {
+      if (this.color !== board.grid[Y][k].color) { //MAKE BLOCKER POSITION LEGAL IF ENEMY
+        this.legalMoves.push([k, Y])
       }
       k = board.grid.length // STOP LOOP ON BLOCKER
     } else {
-      this.legalMoves.push([k, this.pos.y])
+      this.legalMoves.push([k, Y])
     }
   }
-  for (l = this.pos.x - 1; l > 0; l--) { //MOVE LEFT
-    if (board.grid[this.pos.y][l]) {
-      if (this.color !== board.grid[this.pos.y][l].color) { //MAKE BLOCKER POSITION LEGAL IF ENEMY
-        this.legalMoves.push([l, this.pos.y])
+  for (l = X - 1; l > 0; l--) { //MOVE LEFT
+    if (board.grid[Y][l]) {
+      if (this.color !== board.grid[Y][l].color) { //MAKE BLOCKER POSITION LEGAL IF ENEMY
+        this.legalMoves.push([l, Y])
       }
       l = 0 // STOP LOOP ON BLOCKER
     } else {
-      this.legalMoves.push([l, this.pos.y])
+      this.legalMoves.push([l, Y])
     }
   }
   var caseExist = this.legalMoves.filter(function(item) {
