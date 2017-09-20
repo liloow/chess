@@ -286,7 +286,7 @@ King.prototype._canMove = function(x, y) {
   if (this.color === 'white') {
     for (i = (that.pos.x - 1); i <= (that.pos.x + 1); i++) { //scope of legal moves
       for (j = (that.pos.y - 1); j <= (that.pos.y + 1); j++) {
-        this.legalMoves.push([i, j])
+        this.legalMoves.push([j, i])
       }
     }
   } else {
@@ -297,9 +297,10 @@ King.prototype._canMove = function(x, y) {
     }
   }
   this.legalMoves.splice(4, 1)
+ // debugger
   let inbound = this.legalMoves.filter((el, i) => {
     return (el[0] >= 0 && el[1] >= 0) && (el[0] < board.grid.length && el[1] < board.grid.length) // UGLY TRICK TO REMOVE OUT OF BOUNDS MOVES
-  })
+  }).filter((el,i)=>{return board.grid[el[0]][el[1]] === null || board.grid[el[0]][el[1]].color !== that.color})
   this.legalMoves = inbound
   console.log(this.legalMoves)
   return this.checkLegal(x, y)
