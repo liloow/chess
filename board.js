@@ -1,4 +1,9 @@
-function Board() { //TO DO : OPTIMIZE THIS CRAP
+function Board() {
+
+
+  //TO DO : OPTIMIZE THIS CRAP
+
+
 
   //BOARD CREATION
 
@@ -67,7 +72,7 @@ Board.prototype.render = function() {
 var PiecePrototype = {
   checkLegal: function(x, y) {
     var legal = this.legalMoves.some(function(moveset) {
-      return moveset[0] === x && moveset[1] === y
+      return moveset[0] === y && moveset[1] === x
     })
     if (legal) {
       return true
@@ -93,30 +98,30 @@ var PiecePrototype = {
     }
   },
   checkCheckLastPlayed: function(x, y) {
-  	if(this.color === 'white') {
-  		if (this._canMove(board.blackKingPosition.x,board.blackKingPosition.y))
-  			alert('!!CHECK!!')
-  			return true
-  	}
-  	if (this.color === 'black') {
-  		if (this._canMove(board.whiteKingPosition.x,board.whiteKingPosition.y))
-  			alert('!!CHECK!!')
-  			return true
-  	}
+    if (this.color === 'white') {
+      if (this._canMove(board.blackKingPosition.x, board.blackKingPosition.y))
+        alert('!!CHECK!!')
+      return true
+    }
+    if (this.color === 'black') {
+      if (this._canMove(board.whiteKingPosition.x, board.whiteKingPosition.y))
+        alert('!!CHECK!!')
+      return true
+    }
     return false
   },
   checkCheck: function() {
-  debugger
-  	if(!board.currentPlayer) {
-  		a = board.blackKingPosition.x
-  		b = board.blackKingPosition.y
-  return board.whiteAssets.map((el,i)=>{return el._canMove(a,b)}).some((el,i)=>{return el})
-  	}
-  	if(board.currentPlayer) {
-  		a = board.whiteKingPosition.x
-  		b = board.whiteKingPosition.y
-  return board.blackAssets.map((el,i)=>{return el._canMove(a,b)}).some((el,i)=>{return el})
-  	}
+ //   debugger
+    if (!board.currentPlayer) {
+      a = board.blackKingPosition.x
+      b = board.blackKingPosition.y
+      return board.whiteAssets.map((el, i) => { return el._canMove(a, b) }).some((el, i) => { return el })
+    }
+    if (board.currentPlayer) {
+      a = board.whiteKingPosition.x
+      b = board.whiteKingPosition.y
+      return board.blackAssets.map((el, i) => { return el._canMove(a, b) }).some((el, i) => { return el })
+    }
   }
 }
 
@@ -290,11 +295,12 @@ King.prototype._canMove = function(x, y) {
         this.legalMoves.push([j, i])
       }
     }
-}
-    this.legalMoves.splice(4, 1)
-    this.legalMoves.filter((el,i)=>{return (el[0] >= 0 && el[1] >= 0) && (el[0] < board.grid.length && el[1] < board.grid.length) // UGLY TRICK TO REMOVE OUT OF BOUNDS MOVES
+  }
+  this.legalMoves.splice(4, 1)
+  let inbound = this.legalMoves.filter((el, i) => {
+    return (el[0] >= 0 && el[1] >= 0) && (el[0] < board.grid.length && el[1] < board.grid.length) // UGLY TRICK TO REMOVE OUT OF BOUNDS MOVES
   })
-  
+  this.legalMoves = inbound
   console.log(this.legalMoves)
   return this.checkLegal(x, y)
 }
