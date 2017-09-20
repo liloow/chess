@@ -12,8 +12,8 @@ function Board() {
       return new Pawn(row + 3, col, 'black')
     });
   }))[0])
-  this.grid[0].splice(2, 1, new Bishop(0, 2, 'white'))
-  this.grid[4].splice(2, 1, new Bishop(4, 2, 'black'))
+  this.grid[0].splice(2, 1, new Queen(0, 2, 'white'))
+  this.grid[4].splice(2, 1, new Queen(4, 2, 'black'))
 }
 
 var PiecePrototype = {
@@ -60,8 +60,8 @@ Board.prototype.render = function() {
   })
 }
 
-function Bishop(row, col, color) { // can only move forward : 1 case (TO DO: 2 case if firstmove)
-  this.class = 'knight'
+function Queen(row, col, color) { // can only move forward : 1 case (TO DO: 2 case if firstmove)
+  this.class = 'queen'
   this.color = color
   this.pos = {
     x: col,
@@ -71,16 +71,13 @@ function Bishop(row, col, color) { // can only move forward : 1 case (TO DO: 2 c
   this.range = 3
 }
 
-Bishop.prototype = Object.create(PiecePrototype)
-
-
-
+Queen.prototype = Object.create(PiecePrototype)
 
 ///////////////////////////////////////////////
-//                 BISHOP                    //
+//                  QUEEN                    //
 ///////////////////////////////////////////////
 
-Bishop.prototype._canMove = function(x, y) {
+Queen.prototype._canMove = function(x, y) {
   var X = this.pos.x
   var Y = this.pos.y
   for (i = 1; i < board.grid.length; i++) { //MOVE UP LEFT
@@ -131,6 +128,46 @@ Bishop.prototype._canMove = function(x, y) {
       }
     }
   }
+  for (i = this.pos.y + 1; i < board.grid.length; i++) { //MOVE DOWN
+    if (board.grid[i][this.pos.x]) {
+      if (this.color !== board.grid[i][this.pos.x].color) { //MAKE BLOCKER POSITION LEGAL IF ENEMY
+        this.legalMoves.push([this.pos.x, i])
+      }
+      i = board.grid.length // STOP LOOP ON BLOCKER
+    } else {
+      this.legalMoves.push([this.pos.x, i])
+    }
+  }
+  for (j = this.pos.y - 1; j > 0; j--) { //MOVE UP
+    if (board.grid[j][this.pos.x]) {
+      if (this.color !== board.grid[j][this.pos.x].color) { //MAKE BLOCKER POSITION LEGAL IF ENEMY
+        this.legalMoves.push([this.pos.x, j])
+      }
+      j = 0 // STOP LOOP ON BLOCKER
+    } else {
+      this.legalMoves.push([this.pos.x, j])
+    }
+  }
+  for (k = this.pos.x + 1; k < board.grid.length; k++) { //MOVE RIGHT
+    if (board.grid[this.pos.y][k]) {
+      if (this.color !== board.grid[this.pos.y][k].color) { //MAKE BLOCKER POSITION LEGAL IF ENEMY
+        this.legalMoves.push([k, this.pos.y])
+      }
+      k = board.grid.length // STOP LOOP ON BLOCKER
+    } else {
+      this.legalMoves.push([k, this.pos.y])
+    }
+  }
+  for (l = this.pos.x - 1; l > 0; l--) { //MOVE LEFT
+    if (board.grid[this.pos.y][l]) {
+      if (this.color !== board.grid[this.pos.y][l].color) { //MAKE BLOCKER POSITION LEGAL IF ENEMY
+        this.legalMoves.push([l, this.pos.y])
+      }
+      l = 0 // STOP LOOP ON BLOCKER
+    } else {
+      this.legalMoves.push([l, this.pos.y])
+    }
+  }
   var caseExist = this.legalMoves.filter(function(item) {
     return (item[0] >= 0 && item[1] >= 0) && (item[0] < board.grid.length && item[1] < board.grid.length) // UGLY TRICK TO REMOVE OUT OF BOUNDS MOVES
   })
@@ -138,13 +175,6 @@ Bishop.prototype._canMove = function(x, y) {
   console.log(this.legalMoves)
   return this.checkLegal(x, y)
 }
-
-
-///////////////////////////////////////////////
-//                  QUEEN                    //
-///////////////////////////////////////////////
-
-
 
 
 var board = new Board()
