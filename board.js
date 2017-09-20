@@ -1,10 +1,10 @@
 function Board() { //TO DO : OPTIMIZE THIS CRAP
 
-	//BOARD CREATION
+  //BOARD CREATION
 
   this.grid = new Array(2).fill(null).map(function(item, row) {
     return new Array(8).fill(null).map(function(item, col) {
-      return new Pawn(row, col)
+      return new Pawn(row, col, 'white')
     })
   })
   this.grid.push([null, null, null, null, null, null, null, null])
@@ -44,15 +44,15 @@ function Board() { //TO DO : OPTIMIZE THIS CRAP
   this.currentPlayer = 0
 
   this.whiteKingPosition = {
-  	x: 4,
-  	y: 0,
+    x: 4,
+    y: 0,
   }
   this.blackKingPosition = {
-  	x: 4,
-  	y: 7,
+    x: 4,
+    y: 7,
   }
-  this.whiteLoss = []
-  this.blackLoss = []
+  this.whiteAssets = this.grid[0].concat(this.grid[1])
+  this.blackAssets = this.grid[7].concat(this.grid[6])
   this.whiteWin = false
   this.blackWin = false
 
@@ -83,11 +83,41 @@ var PiecePrototype = {
       this.pos.y = y
       this.pos.x = x
       board.render()
+      if (this.class = 'king') {
+        if (this.color = 'white') {
+          board.whiteKingPosition = this.pos
+        } else {
+          board.blackKingPosition = this.pos
+        }
+      }
     }
   },
-  checkCheck : function(x,y) {
-  	return false
+  checkCheckLastPlayed: function(x, y) {
+  	if(this.color === 'white') {
+  		if (this._canMove(board.blackKingPosition.x,board.blackKingPosition.y))
+  			alert('!!CHECK!!')
+  			return true
+  	}
+  	if (this.color === 'black') {
+  		if (this._canMove(board.whiteKingPosition.x,board.whiteKingPosition.y))
+  			alert('!!CHECK!!')
+  			return true
+  	}
+    return false
   },
+  checkCheck: function() {
+  debugger
+  	if(!board.currentPlayer) {
+  		a = board.blackKingPosition.x
+  		b = board.blackKingPosition.y
+  return board.whiteAssets.map((el,i)=>{return el._canMove(a,b)}).some((el,i)=>{return el})
+  	}
+  	if(board.currentPlayer) {
+  		a = board.whiteKingPosition.x
+  		b = board.whiteKingPosition.y
+  return board.blackAssets.map((el,i)=>{return el._canMove(a,b)}).some((el,i)=>{return el})
+  	}
+  }
 }
 
 ///////////////////////////////////////////////
@@ -174,9 +204,6 @@ Queen.prototype = Object.create(PiecePrototype)
 
 Pawn.prototype.move = function(x, y) {
   this.legalMoves = []
-  console.log(this)
-  console.log(this._canMove(x, y))
-  console.log(this._canAttack(x, y))
   if (this._canMove(x, y) || this._canAttack(x, y)) {
     var temp = board.grid[this.pos.y][this.pos.x]
     board.grid[y][x] = temp
@@ -263,8 +290,11 @@ King.prototype._canMove = function(x, y) {
         this.legalMoves.push([j, i])
       }
     }
+}
     this.legalMoves.splice(4, 1)
-  }
+    this.legalMoves.filter((el,i)=>{return (el[0] >= 0 && el[1] >= 0) && (el[0] < board.grid.length && el[1] < board.grid.length) // UGLY TRICK TO REMOVE OUT OF BOUNDS MOVES
+  })
+  
   console.log(this.legalMoves)
   return this.checkLegal(x, y)
 }
@@ -333,7 +363,7 @@ Knight.prototype._canMove = function(x, y) {
     this.legalMoves.push([this.pos.y - 1, j])
   }
   var caseExist = this.legalMoves.filter(function(item) {
-    return (item[0] >= 0 && item[1] >= 0) || (item[0] < this.length && item[1] < this.length)
+    return (item[0] >= 0 && item[1] >= 0) && (item[0] < board.grid.length && item[1] < board.grid.length)
   }).filter(function(item) {
     if (!board.grid[item[0]][item[1]]) return true
     return that.color !== board.grid[item[0]][item[1]].color
