@@ -1,12 +1,22 @@
-.cell {
-  width: 64px;
-  height: 64px;
+.square {
+  width: 5vw;
+  height: 5vw;
   display: inline-block;
   border: 1px solid black;
 }
 
+img {
+  width: 5vw;
+  height: 5vw;
+}
+
 .title {
   margin:auto;
+  background-color: chartreuse;
+  border-radius: 50%;
+  padding: 10px 0px; 
+  margin: 0px 20%;
+
 }
 
 .black {
@@ -23,27 +33,7 @@
   justify-content: center;
 }
 
-* {
-  box-sizing: content-box;
-}
 
 body {
   margin: 0;
-}
-
-#container {
-  position: relative;
-  margin: 200px;
-}
-
-#game-over {
-  color: white;
-  font-size: 42px;
-  font-family: Arial, Helvetica, sans-serif;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 100%;
-  text-align: center;
-  background-color: rgba(0, 0, 0, 0.3);
 }

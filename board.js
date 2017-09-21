@@ -7,46 +7,54 @@ function Board() {
 
   //BOARD CREATION
 
-  this.grid = new Array(2).fill(null).map(function(item, row) {
-    return new Array(8).fill(null).map(function(item, col) {
-      return new Pawn(row, col, 'white')
-    })
+  let id = 0
+
+  this.grid = new Array(1).fill(null).map(function(item, row) {
+    return new Array(8).fill(null)
   })
+
+  this.grid.push((new Array(1).fill(null).map(function(item, row) {
+    return new Array(8).fill(null).map(function(item, col) {
+      id++
+      return new Pawn(row, col, 'white', id)
+    })
+  }))[0])
   this.grid.push([null, null, null, null, null, null, null, null])
   this.grid.push([null, null, null, null, null, null, null, null])
   this.grid.push([null, null, null, null, null, null, null, null])
   this.grid.push([null, null, null, null, null, null, null, null])
   this.grid.push((new Array(1).fill(null).map(function(item, row) {
     return new Array(8).fill(null).map(function(item, col) {
-      return new Pawn(row + 3, col, 'black')
+      id++
+      return new Pawn(row + 3, col, 'black', id)
     });
   }))[0])
   this.grid.push((new Array(1).fill(null).map(function(item, row) {
     return new Array(8).fill(null).map(function(item, col) {
-      return new Pawn(row + 3, col, 'black')
+      return new Pawn(row + 3, col, 'black', id)
     });
   }))[0])
-  this.grid[0].splice(4, 1, new King(0, 4, 'white'))
-  this.grid[7].splice(4, 1, new King(7, 4, 'black'))
-  this.grid[0].splice(0, 1, new Rook(0, 0, 'white'))
-  this.grid[7].splice(0, 1, new Rook(7, 0, 'black'))
-  this.grid[0].splice(7, 1, new Rook(0, 7, 'white'))
-  this.grid[7].splice(7, 1, new Rook(7, 7, 'black'))
-  this.grid[0].splice(1, 1, new Knight(0, 1, 'white'))
-  this.grid[7].splice(1, 1, new Knight(7, 1, 'black'))
-  this.grid[0].splice(6, 1, new Knight(0, 6, 'white'))
-  this.grid[7].splice(6, 1, new Knight(7, 6, 'black'))
-  this.grid[0].splice(2, 1, new Bishop(0, 2, 'white'))
-  this.grid[7].splice(2, 1, new Bishop(7, 2, 'black'))
-  this.grid[0].splice(5, 1, new Bishop(0, 5, 'white'))
-  this.grid[7].splice(5, 1, new Bishop(7, 5, 'black'))
-  this.grid[0].splice(3, 1, new Queen(0, 3, 'white'))
-  this.grid[7].splice(3, 1, new Queen(7, 3, 'black'))
+  this.grid[0].splice(4, 1, new King(0, 4, 'white', 1))
+  this.grid[7].splice(4, 1, new King(7, 4, 'black', 2))
+  this.grid[0].splice(0, 1, new Rook(0, 0, 'white', 1))
+  this.grid[7].splice(0, 1, new Rook(7, 0, 'black', 3))
+  this.grid[0].splice(7, 1, new Rook(0, 7, 'white', 2))
+  this.grid[7].splice(7, 1, new Rook(7, 7, 'black', 4))
+  this.grid[0].splice(1, 1, new Knight(0, 1, 'white', 1))
+  this.grid[7].splice(1, 1, new Knight(7, 1, 'black', 3))
+  this.grid[0].splice(6, 1, new Knight(0, 6, 'white', 2))
+  this.grid[7].splice(6, 1, new Knight(7, 6, 'black', 4))
+  this.grid[0].splice(2, 1, new Bishop(0, 2, 'white', 1))
+  this.grid[7].splice(2, 1, new Bishop(7, 2, 'black', 3))
+  this.grid[0].splice(5, 1, new Bishop(0, 5, 'white', 2))
+  this.grid[7].splice(5, 1, new Bishop(7, 5, 'black', 4))
+  this.grid[0].splice(3, 1, new Queen(0, 3, 'white', 1))
+  this.grid[7].splice(3, 1, new Queen(7, 3, 'black', 2))
 
 
   // PLAYER RELATED
 
-  this.currentPlayer = true
+  this.currentPlayer = true 
   this.players = {
     true: 'white',
     false: 'black',
@@ -60,9 +68,10 @@ function Board() {
     x: 4,
     y: 7,
   }
-  this.whiteAssets = this.grid[0].concat(this.grid[1])
-  this.blackAssets = this.grid[7].concat(this.grid[6])
-  this.whiteWin = false
+  this.whiteAssets = this.grid[0].concat(this.grid[1]) 
+  this.blackAssets = 
+  this.grid[7].concat(this.grid[6]) 
+  this.whiteWin = false 
   this.blackWin = false
 
 }
@@ -119,7 +128,7 @@ var PiecePrototype = {
     return false
   },
   checkCheck: function() {
-  //     debugger
+    //     debugger
     if (board.currentPlayer) {
       a = board.blackKingPosition.x
       b = board.blackKingPosition.y
@@ -138,8 +147,9 @@ var PiecePrototype = {
 ///////////////////////////////////////////////
 
 
-function Pawn(row, col, color) { // can only move forward : 1 case (TO DO: 2 case if firstmove)
+function Pawn(row, col, color, id) { // can only move forward : 1 case 
   this.class = 'pawn'
+  this.id = this.class + '-' + id
   this.color = color
   this.pos = {
     x: col,
@@ -147,66 +157,65 @@ function Pawn(row, col, color) { // can only move forward : 1 case (TO DO: 2 cas
   }
   this.moved = false
   this.legalMoves = []
-  this.range = 1
 }
 
-function King(row, col, color) {
+function King(row, col, color, id) {
   this.class = 'king'
+  this.id = this.class + '-' + id
   this.color = color
   this.pos = {
     x: col,
     y: row,
   }
   this.legalMoves = []
-  this.range = 1
 }
 King.prototype = Object.create(PiecePrototype)
 
-function Rook(row, col, color) {
+function Rook(row, col, color, id) {
   this.class = 'rook'
+  this.id = this.class + '-' + id
   this.color = color
   this.pos = {
     x: col,
     y: row,
   }
   this.legalMoves = []
-  this.range = 7
 }
 Rook.prototype = Object.create(PiecePrototype)
 
-function Knight(row, col, color) {
+function Knight(row, col, color, id) {
   this.class = 'knight'
+  this.id = this.class + '-' + id
   this.color = color
   this.pos = {
     x: col,
     y: row,
   }
   this.legalMoves = []
-  this.range = 3
 }
 Knight.prototype = Object.create(PiecePrototype)
 
-function Bishop(row, col, color) {
-  this.class = 'knight'
+function Bishop(row, col, color, id) {
+  this.class = 'bishop'
+  this.id = this.class + '-' + id
   this.color = color
   this.pos = {
     x: col,
     y: row,
   }
   this.legalMoves = []
-  this.range = 3
 }
 Bishop.prototype = Object.create(PiecePrototype)
 
-function Queen(row, col, color) {
+function Queen(row, col, color, id) {
   this.class = 'queen'
+  this.id = this.class + '-' + id
   this.color = color
   this.pos = {
     x: col,
     y: row,
   }
   this.legalMoves = []
-  this.range = 3
 }
 Queen.prototype = Object.create(PiecePrototype)
 
@@ -546,8 +555,3 @@ Queen.prototype._canMove = function(x, y) {
   this.legalMoves = caseExist
   return this.checkLegal(x, y)
 }
-
-
-var board = new Board()
-
-board.render()
