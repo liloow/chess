@@ -26,8 +26,8 @@ $(document).ready(function() {
 
       console.log(initX + ',' + initY)
       console.log( board.grid[initY][initX])
-      console.log('target = ' + targetX + ',' + targetY)
-      board.grid[initY][initX].move(targetX, targetY)
+      console.log('target = ' + targetY + ',' + targetX)
+      board.grid[initY][initX].move(targetY, targetX)
             stateSelected = !stateSelected
             console.log(stateSelected)
 
