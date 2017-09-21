@@ -106,10 +106,16 @@ var PiecePrototype = {
           board.blackKingPosition = this.pos
         }
       }
-      if (this.checkCheck()) {
-        alert('!!CHECK!!')
-      }
       board.currentPlayer = !board.currentPlayer
+      render()
+      if (this.checkCheck()) {
+        console.log('!!CHECK!!')
+        console.log('!!CHECK!!')
+        console.log('!!CHECK!!')
+        console.log('!!CHECK!!')
+        console.log('!!CHECK!!')
+        console.log('!!CHECK!!')
+      }
     }
   },
   checkCheckLastPlayed: function(y, x) {
@@ -126,7 +132,6 @@ var PiecePrototype = {
     return false
   },
   checkCheck: function() {
-    //     debugger
     if (!board.currentPlayer) {
       a = board.blackKingPosition.x
       b = board.blackKingPosition.y
@@ -146,7 +151,7 @@ var PiecePrototype = {
 
 
 function Pawn(row, col, color, id) { // can only move forward : 1 case 
-  this.class = 'pawn'
+  this.class = 'Pawn'
   this.id = this.class + '-' + id
   this.color = color
   this.pos = {
@@ -158,7 +163,7 @@ function Pawn(row, col, color, id) { // can only move forward : 1 case
 }
 
 function King(row, col, color, id) {
-  this.class = 'king'
+  this.class = 'King'
   this.id = this.class + '-' + id
   this.color = color
   this.pos = {
@@ -170,7 +175,7 @@ function King(row, col, color, id) {
 King.prototype = Object.create(PiecePrototype)
 
 function Rook(row, col, color, id) {
-  this.class = 'rook'
+  this.class = 'Rook'
   this.id = this.class + '-' + id
   this.color = color
   this.pos = {
@@ -182,7 +187,7 @@ function Rook(row, col, color, id) {
 Rook.prototype = Object.create(PiecePrototype)
 
 function Knight(row, col, color, id) {
-  this.class = 'knight'
+  this.class = 'Knight'
   this.id = this.class + '-' + id
   this.color = color
   this.pos = {
@@ -194,7 +199,7 @@ function Knight(row, col, color, id) {
 Knight.prototype = Object.create(PiecePrototype)
 
 function Bishop(row, col, color, id) {
-  this.class = 'bishop'
+  this.class = 'Bishop'
   this.id = this.class + '-' + id
   this.color = color
   this.pos = {
@@ -206,7 +211,7 @@ function Bishop(row, col, color, id) {
 Bishop.prototype = Object.create(PiecePrototype)
 
 function Queen(row, col, color, id) {
-  this.class = 'queen'
+  this.class = 'Queen'
   this.id = this.class + '-' + id
   this.color = color
   this.pos = {
@@ -232,6 +237,8 @@ Pawn.prototype.move = function(y, x) {
     this.pos.x = x
     this.moved = true
     board.render()
+    board.currentPlayer = !board.currentPlayer
+    render()
   }
 }
 
@@ -431,23 +438,23 @@ Bishop.prototype._canMove = function(y, x) {
     if (board.grid[Y + k]) {
       if (board.grid[Y + k][X - k]) {
         if (this.color !== board.grid[Y + k][X - k].color) { //MAKE BLOCKER POSITION LEGAL IF ENEMY
-          this.legalMoves.push([Y - k, X + k])
+          this.legalMoves.push([Y + k, X - k])
         }
         k = board.grid.length // STOP LOOP ON BLOCKER
       } else {
-        this.legalMoves.push([Y - k, X + k])
+        this.legalMoves.push([Y + k, X - k])
       }
     }
   }
   for (l = 1; l < board.grid.length; l++) { // MOVE UP RIGHT
     if (board.grid[Y - l]) {
-      if (board.grid[Y - l][X + 1]) {
+      if (board.grid[Y - l][X + l]) {
         if (this.color !== board.grid[Y - l][X + l].color) { //MAKE BLOCKER POSITION LEGAL IF ENEMY
-          this.legalMoves.push([Y + l, X - l])
+          this.legalMoves.push([Y - l, X + l])
         }
         l = board.grid.length // STOP LOOP ON BLOCKER
       } else {
-        this.legalMoves.push([Y + l, X - l])
+        this.legalMoves.push([Y - l, X + l])
       }
     }
   }
@@ -463,7 +470,7 @@ Bishop.prototype._canMove = function(y, x) {
 ///////////////////////////////////////////////
 
 Queen.prototype._canMove = function(y, x) {
-//	debugger
+  //	debugger
   var X = this.pos.x
   var Y = this.pos.y
   for (i = 1; i < board.grid.length; i++) { //MOVE UP LEFT
@@ -504,7 +511,7 @@ Queen.prototype._canMove = function(y, x) {
   }
   for (l = 1; l < board.grid.length; l++) { // MOVE UP RIGHT
     if (board.grid[Y - l]) {
-      if (board.grid[Y - l][X + 1]) {
+      if (board.grid[Y - l][X + l]) {
         if (this.color !== board.grid[Y - l][X + l].color) { //MAKE BLOCKER POSITION LEGAL IF ENEMY
           this.legalMoves.push([Y + l, X - l])
         }

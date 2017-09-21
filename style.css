@@ -5,9 +5,18 @@
   border: 1px solid black;
 }
 
+#board {
+  position: relative;
+  height: 40vw;
+  width: 40vw;
+  margin: auto;
+}
+
 img {
   width: 5vw;
   height: 5vw;
+  position: absolute;
+  pointer-events: none;
 }
 
 .title {

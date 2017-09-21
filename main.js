@@ -8,6 +8,8 @@ $(document).ready(function() {
   var initY
 
   board.render()
+  render()
+
 
 
 
@@ -21,32 +23,30 @@ $(document).ready(function() {
       stateSelected = !stateSelected
       console.log(stateSelected)
     } else {
-    	      var targetY = $(this).parent().index()
+      var targetY = $(this).parent().index()
       var targetX = $(this).index() % 8
 
       console.log(initX + ',' + initY)
-      console.log( board.grid[initY][initX])
+      console.log(board.grid[initY][initX])
       console.log('target = ' + targetY + ',' + targetX)
       board.grid[initY][initX].move(targetY, targetX)
-            stateSelected = !stateSelected
-            console.log(stateSelected)
+      stateSelected = !stateSelected
+      console.log(stateSelected)
 
     }
   })
-
 })
-/*
-
-
   function render() {
-    $('.row').each(function(row, rowEl) {
-      $(rowEl)
-        .find('.cell')
-        .each(function(column, cellEl) {
-          var color = board.grid[row][column];
-        });
-    })
-  }
-})
+	board.grid.forEach((row,j)=>{
+		row.forEach((piece,i)=>{
+			var x = j*5+"vw"
+			var y = i*5+"vw"
+			if(piece) {
+			$('#'+ piece.id).css('top', x)
+			$('#'+ piece.id).css('left', y)
+		}
+		})
+	})    
+}
 
-*/
+
