@@ -3,7 +3,7 @@ var board = new Board()
 
 function init() {
   $('img[color="black"]').addClass('disabled')
- // $('.check').hide()
+  // $('.check').hide()
 }
 
 $(document).ready(function() {
@@ -42,10 +42,12 @@ $(document).ready(function() {
         console.log(board.graveyard)
       }
       $(selected).removeClass('selected')
+      var safety = board.currentPlayer
       board.grid[initY][initX].move(targetY, targetX)
-      $('img').toggleClass('disabled')
-      stateSelected = !stateSelected	
-      console.log(stateSelected)
+      if (safety !== board.currentPlayer) {
+        $('img').toggleClass('disabled')
+      }
+      stateSelected = !stateSelected
     }
   })
 })
@@ -91,4 +93,4 @@ function check() {
     }
     count--
   }, 1001)
- }
+}

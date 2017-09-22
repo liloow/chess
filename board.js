@@ -1,3 +1,5 @@
+var boardClone;
+
 function Board() {
 
 
@@ -82,6 +84,13 @@ Board.prototype.render = function() {
   })
 }
 
+Board.prototype.clone = function() {
+  var c = new Board()
+  c.whiteAssets = Object.assign({}, this.whiteAssets)
+  c.blackAssets = Object.assign({}, this.blackAssets)
+  return c
+}
+
 var PiecePrototype = {
   checkLegal: function(y, x) {
     var legal = this.legalMoves.some(function(moveset) {
@@ -92,11 +101,16 @@ var PiecePrototype = {
     }
     return false
   },
+  copy: function() {
+    var c = Object.create(this.__proto__)
+    Object.assign(c, this)
+    return c
+  },
   move: function(y, x) {
-    var that = this
     this.legalMoves = []
-    if (!this.caseIsCheck)
-    	return false
+    if (!this.caseIsCheck(y, x)) {
+      return false
+    }
     if (this._canMove(y, x)) {
       var temp = board.grid[this.pos.y][this.pos.x]
       board.grid[y][x] = temp
@@ -125,10 +139,50 @@ var PiecePrototype = {
         check()
         return false;
       }
-      board.blackKingPosition.isCheck = false
-      board.whiteKingPosition.isCheck = false
+      if (!board.currentPlayer) {
+        board.whiteKingPosition.isCheck = false
+      } else {
+        board.blackKingPosition.isCheck = false
+
+      }
+      return true
+
     }
-    return true
+  },
+  virtualMove: function(y, x) {
+    this.legalMoves = []
+    if (this._canMove(y, x)) {
+      var temp = boardClone.grid[this.pos.y][this.pos.x]
+      boardClone.grid[y][x] = temp
+      this.pos.y = y
+      this.pos.x = x
+      if (this.class === 'king') {
+        if (this.color = 'white') {
+          boardClone.whiteKingPosition.x = this.pos.x
+          boardClone.whiteKingPosition.y = this.pos.y
+        } else {
+          boardClone.blackKingPosition.x = this.pos.x
+          boardClone.blackKingPosition.y = this.pos.y
+        }
+      }
+      if (this.checkCheck()) {
+        if (!boardClone.currentPlayer) {
+          boardClone.blackKingPosition.isCheck = true
+        } else {
+          boardClone.whiteKingPosition.isCheck = true
+        }
+        check()
+        return false;
+      }
+      if (!boardClone.currentPlayer) {
+        boardClone.blackKingPosition.isCheck = false
+      } else {
+        boardClone.whiteKingPosition.isCheck = false
+
+      }
+      return true
+
+    }
   },
   checkCheck: function() {
 
@@ -145,17 +199,21 @@ var PiecePrototype = {
     }
   },
   caseIsCheck: function(y, x) {
+    boardClone = board.clone()
+    //boardClone = { ...board }
+    console.log(boardClone)
     if (board.blackKingPosition.isCheck) {
-      var boardClone = { ...board }
-      if (!boardClone[that.pos.y][that.pos.y].move(y, x))
+      boardClone.grid[this.pos.y][this.pos.x].virtualMove(y, x)
+      if (boardClone.blackKingPosition.isCheck) {
         return false
-      return true
+      }
     }
     if (board.whiteKingPosition.isCheck) {
-      var boardClone = { ...board }
-      if (!boardClone[that.pos.y][that.pos.y].move(y, x))
+      // boardClone = { ...board }
+      boardClone.grid[this.pos.y][this.pos.x].virtualMove(y, x)
+      if (boardClone.blackKingPosition.isCheck) {
         return false
-      return true
+      }
     }
     return true
   },
@@ -257,6 +315,8 @@ Queen.prototype = Object.create(PiecePrototype)
 
 Pawn.prototype.move = function(y, x) {
   this.legalMoves = []
+  if (!this.caseIsCheck(y, x))
+    return false
   if (this._canMove(y, x) || this._canAttack(y, x)) {
     var temp = board.grid[this.pos.y][this.pos.x]
     board.grid[y][x] = temp
@@ -275,16 +335,9 @@ Pawn.prototype.move = function(y, x) {
         board.whiteKingPosition.isCheck = true
       }
       check()
-      console.log('!!CHECK!!')
-      console.log('!!CHECK!!')
-      console.log('!!CHECK!!')
-      console.log('!!CHECK!!')
-      console.log('!!CHECK!!')
-      console.log('!!CHECK!!')
       return;
     }
-    board.blackKingPosition.isCheck = false
-    board.whiteKingPosition.isCheck = false
+
   }
 }
 
@@ -311,12 +364,12 @@ Pawn.prototype._canMove = function(y, x) {
     if (legal) {
       return true
     }
-
     return false
   }
 }
 
 Pawn.prototype._canAttack = function(y, x) {
+
   var target = board.grid[y][x]
   if (target === null) return false // If empty, stop function
 
