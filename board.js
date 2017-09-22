@@ -71,6 +71,7 @@ function Board() {
     this.grid[7].concat(this.grid[6])
   this.whiteWin = false
   this.blackWin = false
+  this.graveyard = []
 
 }
 

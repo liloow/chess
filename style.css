@@ -16,6 +16,10 @@ img {
   width: 5vw;
   height: 5vw;
   position: absolute;
+/*  pointer-events: none;*/
+}
+
+.disabled {
   pointer-events: none;
 }
 
@@ -45,4 +49,8 @@ img {
 
 body {
   margin: 0;
+}
+
+.selected {
+  border: 2px solid blue;
 }
