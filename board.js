@@ -93,7 +93,10 @@ var PiecePrototype = {
     return false
   },
   move: function(y, x) {
+    var that = this
     this.legalMoves = []
+    if (!this.caseIsCheck)
+    	return false
     if (this._canMove(y, x)) {
       var temp = board.grid[this.pos.y][this.pos.x]
       board.grid[y][x] = temp
@@ -116,37 +119,51 @@ var PiecePrototype = {
       if (this.checkCheck()) {
         if (!board.currentPlayer) {
           board.blackKingPosition.isCheck = true
-
         } else {
           board.whiteKingPosition.isCheck = true
         }
         check()
-        console.log('!!CHECK!!')
-        console.log('!!CHECK!!')
-        console.log('!!CHECK!!')
-        console.log('!!CHECK!!')
-        console.log('!!CHECK!!')
-        console.log('!!CHECK!!')
-        return;
+        return false;
       }
       board.blackKingPosition.isCheck = false
       board.whiteKingPosition.isCheck = false
     }
+    return true
   },
   checkCheck: function() {
 
-  	//debugger
+    //debugger
     if (!board.currentPlayer) {
       a = board.blackKingPosition.y
       b = board.blackKingPosition.x
-      return board.whiteAssets.map((el, i) => {el.legalMoves = [];return el._canMove(a, b) }).some((el, i) => { return el })
+      return board.whiteAssets.map((el, i) => { el.legalMoves = []; return el._canMove(a, b) }).some((el, i) => { return el })
     }
     if (board.currentPlayer) {
       a = board.whiteKingPosition.y
       b = board.whiteKingPosition.x
-      return board.blackAssets.map((el, i) => {el.legalMoves = [];return el._canMove(a, b) }).some((el, i) => { return el })
+      return board.blackAssets.map((el, i) => { el.legalMoves = []; return el._canMove(a, b) }).some((el, i) => { return el })
     }
-  }
+  },
+  caseIsCheck: function(y, x) {
+    if (board.blackKingPosition.isCheck) {
+      var boardClone = { ...board }
+      if (!boardClone[that.pos.y][that.pos.y].move(y, x))
+        return false
+      return true
+    }
+    if (board.whiteKingPosition.isCheck) {
+      var boardClone = { ...board }
+      if (!boardClone[that.pos.y][that.pos.y].move(y, x))
+        return false
+      return true
+    }
+    return true
+  },
+
+
+  // var boardClone = {...board}
+  // console.log(boardClone)
+  // boardClone.blackAssets.map((el, i) => {el.legalMoves = [];return el._canMove(a, b) }).some((el, i) => { return el })
 }
 
 ///////////////////////////////////////////////
@@ -499,7 +516,7 @@ Bishop.prototype._canMove = function(y, x) {
 ///////////////////////////////////////////////
 
 Queen.prototype._canMove = function(y, x) {
- // 	debugger
+  // 	debugger
   var X = this.pos.x
   var Y = this.pos.y
   for (i = 1; i < board.grid.length; i++) { //MOVE UP LEFT
@@ -527,7 +544,7 @@ Queen.prototype._canMove = function(y, x) {
     }
   }
   for (k = 1; k < board.grid.length; k++) { //MOVE DOWN LEFT 
- // 	debugger
+    // 	debugger
     if (board.grid[Y + k]) {
       if (board.grid[Y + k][X - k]) {
         if (this.color !== board.grid[Y + k][X - k].color) { //MAKE BLOCKER POSITION LEGAL IF ENEMY

@@ -44,7 +44,7 @@ $(document).ready(function() {
       $(selected).removeClass('selected')
       board.grid[initY][initX].move(targetY, targetX)
       $('img').toggleClass('disabled')
-      stateSelected = !stateSelected
+      stateSelected = !stateSelected	
       console.log(stateSelected)
     }
   })
@@ -83,12 +83,12 @@ function died() {
 }
 
 function check() {
-  var count = 4
+  var count = 5
   var repeat3 = setInterval(function() {
     $('.check').toggleClass('hide')
     if (count === 0) {
       clearInterval(repeat3)
     }
     count--
-  }, 1501)
+  }, 1001)
  }
