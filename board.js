@@ -101,7 +101,7 @@ var PiecePrototype = {
       this.pos.y = y
       this.pos.x = x
       board.render()
-      if (this.class = 'king') {
+      if (this.class === 'king') {
         if (this.color = 'white') {
           board.whiteKingPosition.x = this.pos.x
           board.whiteKingPosition.y = this.pos.y
@@ -134,15 +134,17 @@ var PiecePrototype = {
     }
   },
   checkCheck: function() {
+
+  	//debugger
     if (!board.currentPlayer) {
-      a = board.blackKingPosition.x
-      b = board.blackKingPosition.y
-      return board.whiteAssets.map((el, i) => { return el._canMove(a, b) }).some((el, i) => { return el })
+      a = board.blackKingPosition.y
+      b = board.blackKingPosition.x
+      return board.whiteAssets.map((el, i) => {el.legalMoves = [];return el._canMove(a, b) }).some((el, i) => { return el })
     }
     if (board.currentPlayer) {
-      a = board.whiteKingPosition.x
-      b = board.whiteKingPosition.y
-      return board.blackAssets.map((el, i) => { return el._canMove(a, b) }).some((el, i) => { return el })
+      a = board.whiteKingPosition.y
+      b = board.whiteKingPosition.x
+      return board.blackAssets.map((el, i) => {el.legalMoves = [];return el._canMove(a, b) }).some((el, i) => { return el })
     }
   }
 }
@@ -497,7 +499,7 @@ Bishop.prototype._canMove = function(y, x) {
 ///////////////////////////////////////////////
 
 Queen.prototype._canMove = function(y, x) {
-  //	debugger
+ // 	debugger
   var X = this.pos.x
   var Y = this.pos.y
   for (i = 1; i < board.grid.length; i++) { //MOVE UP LEFT
@@ -525,14 +527,15 @@ Queen.prototype._canMove = function(y, x) {
     }
   }
   for (k = 1; k < board.grid.length; k++) { //MOVE DOWN LEFT 
+ // 	debugger
     if (board.grid[Y + k]) {
       if (board.grid[Y + k][X - k]) {
         if (this.color !== board.grid[Y + k][X - k].color) { //MAKE BLOCKER POSITION LEGAL IF ENEMY
-          this.legalMoves.push([Y - k, X + k])
+          this.legalMoves.push([Y + k, X - k])
         }
         k = board.grid.length // STOP LOOP ON BLOCKER
       } else {
-        this.legalMoves.push([Y - k, X + k])
+        this.legalMoves.push([Y + k, X - k])
       }
     }
   }
@@ -540,11 +543,11 @@ Queen.prototype._canMove = function(y, x) {
     if (board.grid[Y - l]) {
       if (board.grid[Y - l][X + l]) {
         if (this.color !== board.grid[Y - l][X + l].color) { //MAKE BLOCKER POSITION LEGAL IF ENEMY
-          this.legalMoves.push([Y + l, X - l])
+          this.legalMoves.push([Y - l, X + l])
         }
         l = board.grid.length // STOP LOOP ON BLOCKER
       } else {
-        this.legalMoves.push([Y + l, X - l])
+        this.legalMoves.push([Y - l, X + l])
       }
     }
   }
