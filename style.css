@@ -12,7 +12,7 @@
   margin: auto;
 }
 
-img {
+#board img {
   width: 5vw;
   height: 5vw;
   position: absolute;
@@ -21,6 +21,12 @@ img {
 
 .disabled {
   pointer-events: none;
+}
+
+.card-body {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
 }
 
 .title {
@@ -53,4 +59,30 @@ body {
 
 .selected {
   border: 2px solid blue;
+}
+
+h1 {
+  font-size: 3vw;
+}
+h2 {
+  font-size: 2vw;
+}
+h3 {
+  font-size: 1.5vw;
+  font-weight: bold;
+  margin-bottom: 0px;
+}
+
+#side {
+  margin: 0px;
+}
+
+.hide {
+  display: none;
+}
+
+.check {
+  width: 100%;
+  border: 2px solid red;
+  border-radius: 20px;
 }

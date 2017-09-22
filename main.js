@@ -1,8 +1,9 @@
 var stateSelected = false
 var board = new Board()
 
-function init () {
-	 $('img[color="black"]').addClass('disabled')
+function init() {
+  $('img[color="black"]').addClass('disabled')
+ // $('.check').hide()
 }
 
 $(document).ready(function() {
@@ -14,7 +15,7 @@ $(document).ready(function() {
   board.render()
 
   render()
-init()
+  init()
 
 
   $('img').click(function() {
@@ -37,6 +38,7 @@ init()
       if (obliterated) {
         if (obliterated.color !== obliterant.color)
           board.graveyard.push(obliterated)
+        obliterated.dead = true
         console.log(board.graveyard)
       }
       $(selected).removeClass('selected')
@@ -62,6 +64,31 @@ function render() {
       }
     })
   })
+  died()
 }
 
+function died() {
+  for (i = 0; i < board.graveyard.length; i++) {
+    var ID = board.graveyard[i].id
+    var color = board.graveyard[i].color
+    $('#' + ID).css('position', '')
+    $('#' + ID).css('top', '')
+    $('#' + ID).css('left', '')
+    $('#' + ID).prependTo("#graveyard")
+    $('#' + ID).css('width', '3vw')
+    $('#' + ID).css('height', '3vw')
+    //$('#' + ID).css('display','flex')
 
+  }
+}
+
+function check() {
+  var count = 4
+  var repeat3 = setInterval(function() {
+    $('.check').toggleClass('hide')
+    if (count === 0) {
+      clearInterval(repeat3)
+    }
+    count--
+  }, 1501)
+ }

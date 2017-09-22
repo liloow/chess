@@ -61,14 +61,15 @@ function Board() {
   this.whiteKingPosition = {
     x: 4,
     y: 0,
+    isCheck: false,
   }
   this.blackKingPosition = {
     x: 4,
     y: 7,
+    isCheck: false,
   }
   this.whiteAssets = this.grid[0].concat(this.grid[1])
-  this.blackAssets =
-    this.grid[7].concat(this.grid[6])
+  this.blackAssets = this.grid[7].concat(this.grid[6])
   this.whiteWin = false
   this.blackWin = false
   this.graveyard = []
@@ -102,35 +103,35 @@ var PiecePrototype = {
       board.render()
       if (this.class = 'king') {
         if (this.color = 'white') {
-          board.whiteKingPosition = this.pos
+          board.whiteKingPosition.x = this.pos.x
+          board.whiteKingPosition.y = this.pos.y
         } else {
-          board.blackKingPosition = this.pos
+          board.blackKingPosition.x = this.pos.x
+          board.blackKingPosition.y = this.pos.y
         }
       }
       board.currentPlayer = !board.currentPlayer
+      died()
       render()
       if (this.checkCheck()) {
+        if (!board.currentPlayer) {
+          board.blackKingPosition.isCheck = true
+
+        } else {
+          board.whiteKingPosition.isCheck = true
+        }
+        check()
         console.log('!!CHECK!!')
         console.log('!!CHECK!!')
         console.log('!!CHECK!!')
         console.log('!!CHECK!!')
         console.log('!!CHECK!!')
         console.log('!!CHECK!!')
+        return;
       }
+      board.blackKingPosition.isCheck = false
+      board.whiteKingPosition.isCheck = false
     }
-  },
-  checkCheckLastPlayed: function(y, x) {
-    if (this.color === 'white') {
-      if (this._canMove(board.blackKingPosition.x, board.blackKingPosition.y))
-        alert('!!CHECK!!')
-      return true
-    }
-    if (this.color === 'black') {
-      if (this._canMove(board.whiteKingPosition.x, board.whiteKingPosition.y))
-        alert('!!CHECK!!')
-      return true
-    }
-    return false
   },
   checkCheck: function() {
     if (!board.currentPlayer) {
@@ -161,7 +162,9 @@ function Pawn(row, col, color, id) { // can only move forward : 1 case
   }
   this.moved = false
   this.legalMoves = []
+  this.dead = false
 }
+Pawn.prototype = Object.create(PiecePrototype)
 
 function King(row, col, color, id) {
   this.class = 'King'
@@ -172,6 +175,7 @@ function King(row, col, color, id) {
     y: row,
   }
   this.legalMoves = []
+  this.dead = false
 }
 King.prototype = Object.create(PiecePrototype)
 
@@ -184,6 +188,7 @@ function Rook(row, col, color, id) {
     y: row,
   }
   this.legalMoves = []
+  this.dead = false
 }
 Rook.prototype = Object.create(PiecePrototype)
 
@@ -196,6 +201,7 @@ function Knight(row, col, color, id) {
     y: row,
   }
   this.legalMoves = []
+  this.dead = false
 }
 Knight.prototype = Object.create(PiecePrototype)
 
@@ -208,6 +214,7 @@ function Bishop(row, col, color, id) {
     y: row,
   }
   this.legalMoves = []
+  this.dead = false
 }
 Bishop.prototype = Object.create(PiecePrototype)
 
@@ -220,6 +227,7 @@ function Queen(row, col, color, id) {
     y: row,
   }
   this.legalMoves = []
+  this.dead = false
 }
 Queen.prototype = Object.create(PiecePrototype)
 
@@ -240,6 +248,24 @@ Pawn.prototype.move = function(y, x) {
     board.render()
     board.currentPlayer = !board.currentPlayer
     render()
+    if (this.checkCheck()) {
+      if (!board.currentPlayer) {
+        board.blackKingPosition.isCheck = true
+
+      } else {
+        board.whiteKingPosition.isCheck = true
+      }
+      check()
+      console.log('!!CHECK!!')
+      console.log('!!CHECK!!')
+      console.log('!!CHECK!!')
+      console.log('!!CHECK!!')
+      console.log('!!CHECK!!')
+      console.log('!!CHECK!!')
+      return;
+    }
+    board.blackKingPosition.isCheck = false
+    board.whiteKingPosition.isCheck = false
   }
 }
 
